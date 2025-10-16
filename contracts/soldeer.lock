@@ -1,0 +1,20 @@
+[[dependencies]]
+name = "@oasisprotocol-sapphire-contracts"
+version = "0.2.15"
+url = "https://soldeer-revisions.s3.amazonaws.com/@oasisprotocol-sapphire-contracts/0_2_15_23-09-2025_11:12:10_contracts.zip"
+checksum = "b443bad66f54e99441c776a733c5e7923a12ab1ebb046e2ab20cff237398c101"
+integrity = "83113787395c339d8405daaaadc2ce4b1894a33ddcc2c4b8229fa3b1801e90c8"
+
+[[dependencies]]
+name = "@oasisprotocol-sapphire-foundry"
+version = "0.1.2"
+url = "https://soldeer-revisions.s3.amazonaws.com/@oasisprotocol-sapphire-foundry/0_1_2_02-10-2025_12:37:30_oasisprotocol-sapphire-foundry.zip"
+checksum = "a3caf2f8f76babf66bb0935bcb797d86082a85e10d691f7e8b4c61a4013e111b"
+integrity = "ca7d6ec03d43a756cce9feb7cea9a938da31c81687a1d0ae50e7c1a1a02347ec"
+
+[[dependencies]]
+name = "@openzeppelin-contracts"
+version = "5.5.0-rc.1"
+url = "https://soldeer-revisions.s3.amazonaws.com/@openzeppelin-contracts/5_5_0-rc_1_15-10-2025_06:15:18_contracts.zip"
+checksum = "c31efe7f5266c6b7033ae25b549c0ca377dbe66bf2cc3d15edc94446b18eed76"
+integrity = "3b205d9c049ca08a875e1c711ed16f5927896482dca336f120fed3119cbc733e"
