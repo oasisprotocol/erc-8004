@@ -1,0 +1,10 @@
+services:
+  erc-8004-validator-agent:
+    build:
+      dockerfile: Dockerfile.validator-agent
+    image: "ghcr.io/oasisprotocol/erc-8004-validator-agent"
+    platform: linux/amd64
+    volumes:
+      - /run/rofl-appd.sock:/run/rofl-appd.sock
+    environment:
+      - INFURA_API_KEY=${INFURA_API_KEY}

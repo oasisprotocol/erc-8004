@@ -1,3 +1,9 @@
 [submodule "contracts/lib/forge-std"]
 	path = contracts/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "validator-agent/tests/lib/forge-std"]
+	path = validator-agent/tests/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "validator-agent/tests/lib/openzeppelin-contracts"]
+	path = validator-agent/tests/lib/openzeppelin-contracts
+	url = https://github.com/OpenZeppelin/openzeppelin-contracts

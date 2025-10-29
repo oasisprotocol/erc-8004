@@ -1,0 +1,23 @@
+rofl:
+  network: testnet  # Options: mainnet, testnet
+log:
+  format: JSON
+  level: info       # Log level (debug, info, warn, error)
+  file: ""          # Log file path (empty for stdout)
+appd:
+  signing_key_id: erc8004v1-signing-key
+  mock: false # Set to true for testing with mocked Appd
+#  mock_signing_key: private_key_outside_tee
+validation_networks:
+  ethereum-sepolia:
+    rpc: wss://sepolia.infura.io/ws/v3/${INFURA_API_KEY}
+    identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
+    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+  base-sepolia:
+    rpc: wss://base-sepolia.infura.io/ws/v3/${INFURA_API_KEY}
+    identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
+    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+  optimism-sepolia:
+    rpc: wss://optimism-sepolia.infura.io/ws/v3/${INFURA_API_KEY}
+    identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
+    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
