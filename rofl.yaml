@@ -1,8 +1,8 @@
 name: validator-agent
+version: 0.1.0
 repository: https://github.com/oasisprotocol/erc-8004
 author: Matevž Jekovec <matevz@oasisprotocol.org>
 license: Apache-2.0
-version: 0.1.0
 tee: tdx
 kind: container
 resources:
@@ -35,8 +35,8 @@ deployments:
           min_tcb_evaluation_data_number: 18
           tdx: {}
       enclaves:
-        - id: U5qKpYQznyLxLB2II3kcABLoq2y8ktXlCkzkCI4t+hwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-        - id: gNcHamvJMZhlp6Lg/eddn4tsbPdyld5pnlkHTbPzaCwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: XSptm3NBrqkv84w0q/rdOFsNgySTxyVQmpwlx1jdtF0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: sJ6bBNRbAEX05jvUT82t06JmsLOAT0dH+O6k8oTu8ikAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       endorsements:
         - any: {}
       fees: endorsing_node
