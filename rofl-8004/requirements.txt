@@ -1,0 +1,4 @@
+agent0-sdk
+ecdsa
+#oasis-rofl-client
+git+https://github.com/oasisprotocol/oasis-sdk.git@matevz/feature/rofl-client-py-sync#egg=oasis-rofl-client&subdirectory=rofl-client/py
