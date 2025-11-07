@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"bytes"
 	"context"
 	"crypto/ecdsa"
 	"encoding/base64"
@@ -14,7 +15,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-
 	"github.com/oasisprotocol/oasis-core/go/common/logging"
 	sdkRofl "github.com/oasisprotocol/oasis-sdk/client-sdk/go/modules/rofl"
 
@@ -59,13 +59,15 @@ func (vr *ValidationReport) ToURI() (string, error) {
 const ScoreReplicaNotExpiredYet = "replica-not-expired-yet"
 const ScoreAtLeastOneReplica = "at-least-one-replica"
 
-var ScoreTable = map[string]uint8{
-	ScoreReplicaNotExpiredYet: 50,
-	ScoreAtLeastOneReplica:    50,
-}
+var (
+	ScoreTable = map[string]uint8{
+		ScoreReplicaNotExpiredYet: 50,
+		ScoreAtLeastOneReplica:    50,
+	}
 
-const TagValidationInProgress = 0
-const TagValidationFinished = 1
+	TagValidationInProgress = [32]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+	TagValidationFinished   = [32]byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01}
+)
 
 type ValidationMonitor struct {
 	name       string
@@ -123,6 +125,32 @@ func (vm *ValidationMonitor) StartMonitor(ctx context.Context) error {
 	}
 	validatorAddress := crypto.PubkeyToAddress(privateKey.PublicKey)
 
+	vm.logger.Debug("fetching unfinished validation requests", "validator_address", validatorAddress)
+	callOpts := &bind.CallOpts{
+		Context: ctx,
+	}
+	validatorRequestHashes, err := vm.validationRegistry.GetValidatorRequests(callOpts, validatorAddress)
+	if err != nil {
+		return fmt.Errorf("failed to get unfinished validation requests: %w", err)
+	}
+	vm.logger.Debug("unfinished validation requests fetched", "count", len(validatorRequestHashes), "request_hashes", validatorRequestHashes)
+	// TODO: Binary search.
+	for i, r := range validatorRequestHashes {
+		validationStatus, err := vm.validationRegistry.GetValidationStatus(callOpts, r)
+		if err != nil {
+			vm.logger.Error("failed to get unfinished validation request", "req_hash", fmt.Sprintf("0x%x", r), "err", err)
+			continue
+		}
+		if bytes.Equal(validationStatus.Tag[:], TagValidationFinished[:]) {
+			// Validation request already processed.
+			continue
+		}
+		if err := vm.generateValidationResponse(ctx, validationStatus.AgentId, validatorRequestHashes[i]); err != nil {
+			vm.logger.Error("failed to generate validation report", "err", err)
+			continue
+		}
+	}
+
 	f, err := abi.NewValidationRegistryFilterer(validationRegistryAddress, vm.client)
 	if err != nil {
 		return fmt.Errorf("failed to create filterer: %w", err)
@@ -133,7 +161,8 @@ func (vm *ValidationMonitor) StartMonitor(ctx context.Context) error {
 	opts := &bind.WatchOpts{
 		Context: ctx,
 	}
-	sub, err := f.WatchValidationRequest(opts, logs, []common.Address{validatorAddress}, []*big.Int{}, [][32]byte{})
+	//sub, err := f.WatchValidationRequest(opts, logs, []common.Address{validatorAddress}, []*big.Int{}, [][32]byte{})
+	sub, err := f.WatchValidationRequest(opts, logs, []common.Address{}, []*big.Int{}, [][32]byte{}) // Fetch all events.
 	if err != nil {
 		vm.logger.Error("failed to watch ValidationRequest events", "err", err)
 		return fmt.Errorf("failed to watch ValidationRequest events: %w", err)
@@ -152,76 +181,85 @@ func (vm *ValidationMonitor) StartMonitor(ctx context.Context) error {
 			vm.logger.Info("received ValidationRequest event from filterer",
 				"requestHash", fmt.Sprintf("0x%x", event.RequestHash),
 				"validator", event.ValidatorAddress.Hex(),
-				"agentId", event.AgentId)
+				"agentId", event.AgentId,
+				"requestURI", event.RequestUri,
+			)
 
-			report := NewValidationReport(event.AgentId)
-
-			rawAppId, err := vm.identityRegistry.GetMetadata(&bind.CallOpts{Context: ctx}, event.AgentId, IDENTITY_REGISTRY_METADATA_APP_ID_KEY)
-			if err != nil {
-				vm.logger.Error("unable to get app ID for agent", "err", err, "agentId", event.AgentId)
-				if err = vm.sendValidationResponse(event.RequestHash, report); err != nil {
-					vm.logger.Error("unable to send validation response", "err", err, "report", report)
-				}
+			if event.ValidatorAddress != validatorAddress {
+				vm.logger.Info("validator address mismatch. Ignoring.", "event_validator_address", event.ValidatorAddress, "wanted_validator_address", validatorAddress)
 				continue
 			}
-			if err = report.AppId.UnmarshalText(rawAppId); err != nil {
-				vm.logger.Error("unable to unmarshal text for app ID", "err", err, "agentId", event.AgentId, "appId", string(rawAppId))
-			}
 
-			appInfo, replicas, lastEpoch, err := vm.roflClient.GetRoflReplicas(string(rawAppId))
-			if err != nil {
-				vm.logger.Error("unable to get ROFL info from Oasis chain", "err", err, "agentId", event.AgentId, "appId", string(rawAppId))
-				if err = vm.sendValidationResponse(event.RequestHash, report); err != nil {
-					vm.logger.Error("unable to send validation response", "err", err, "report", report)
-				}
+			if err := vm.generateValidationResponse(ctx, event.AgentId, event.RequestHash); err != nil {
+				vm.logger.Error("failed to generate validation report", "err", err)
 				continue
-			}
-			report.AppInfo = appInfo
-
-			if len(replicas) != 0 {
-				report.AddScore(ScoreAtLeastOneReplica)
-
-				// Assume the most recent replica has the desired public keys.
-				recentReplicaIdx := 0
-				for i, r := range replicas {
-					if r.Expiration > replicas[recentReplicaIdx].Expiration {
-						recentReplicaIdx = i
-					}
-				}
-				replica := replicas[recentReplicaIdx]
-
-				report.ReplicaInfo = replica
-
-				if replica.Expiration >= lastEpoch {
-					report.AddScore(ScoreReplicaNotExpiredYet)
-				}
-			} else {
-				vm.logger.Debug("ROFL has no replicas", "agentId", event.AgentId, "appId", string(rawAppId))
-			}
-
-			if err = vm.sendValidationResponse(event.RequestHash, report); err != nil {
-				vm.logger.Error("unable to send validation response", "err", err, "report", report)
 			}
 		}
 	}
 }
 
-func (vm *ValidationMonitor) sendValidationResponse(requestHash [32]byte, report *ValidationReport) error {
+func (vm *ValidationMonitor) generateValidationResponse(ctx context.Context, agentId *big.Int, requestHash [32]byte) error {
+	report := NewValidationReport(agentId)
+
+	rawAppId, err := vm.identityRegistry.GetMetadata(&bind.CallOpts{Context: ctx}, agentId, IDENTITY_REGISTRY_METADATA_APP_ID_KEY)
+	if err != nil {
+		return fmt.Errorf("unable to get app ID for agent %s: %w", agentId, err)
+	}
+	if err = report.AppId.UnmarshalText(rawAppId); err != nil {
+		return fmt.Errorf("unable to unmarshal text for app %s and agent %s: %w", string(rawAppId), agentId, err)
+	}
+
+	appInfo, replicas, lastEpoch, err := vm.roflClient.GetRoflReplicas(string(rawAppId))
+	if err != nil {
+		return fmt.Errorf("unable to get ROFL info for app %s and agent %s from Oasis chain: %w", string(rawAppId), agentId, err)
+	}
+	report.AppInfo = appInfo
+
+	if len(replicas) != 0 {
+		report.AddScore(ScoreAtLeastOneReplica)
+
+		// Assume the most recent replica has the desired public keys.
+		recentReplicaIdx := 0
+		for i, r := range replicas {
+			if r.Expiration > replicas[recentReplicaIdx].Expiration {
+				recentReplicaIdx = i
+			}
+		}
+		replica := replicas[recentReplicaIdx]
+
+		report.ReplicaInfo = replica
+
+		if replica.Expiration >= lastEpoch {
+			report.AddScore(ScoreReplicaNotExpiredYet)
+		}
+	} else {
+		vm.logger.Debug("ROFL has no replicas", "agentId", agentId, "appId", string(rawAppId))
+	}
+
+	txHash, err := vm.sendValidationResponse(requestHash, report)
+	if err != nil {
+		return fmt.Errorf("unable to send validation response %s: %w", report, err)
+	}
+
+	vm.logger.Debug("validation response sent", "agentId", agentId, "appId", rawAppId, "tx_hash", txHash)
+
+	return nil
+}
+
+func (vm *ValidationMonitor) sendValidationResponse(requestHash [32]byte, report *ValidationReport) (common.Hash, error) {
 	_, auth, err := GetAddrAuth(vm.signingKey, vm.client)
 	if err != nil {
-		return err
+		return common.Hash{}, err
 	}
 
 	reportURI, err := report.ToURI()
 	if err != nil {
-		return err
+		return common.Hash{}, err
 	}
 	reportURIHash := crypto.Keccak256([]byte(reportURI))
-	var tag [32]byte
-	copy(tag[:], []byte{TagValidationFinished})
-	tx, err := vm.validationRegistry.ValidationResponse(auth, requestHash, report.Score, reportURI, [32]byte(reportURIHash), tag)
+	tx, err := vm.validationRegistry.ValidationResponse(auth, requestHash, report.Score, reportURI, [32]byte(reportURIHash), TagValidationFinished)
 	if err != nil {
-		return err
+		return common.Hash{}, err
 	}
 
 	var receipt *types.Receipt
@@ -234,14 +272,14 @@ func (vm *ValidationMonitor) sendValidationResponse(requestHash [32]byte, report
 	}
 
 	if receipt == nil {
-		return fmt.Errorf("unable to get the receipt")
+		return common.Hash{}, fmt.Errorf("unable to get the receipt")
 	}
 
 	if receipt.Status != 1 {
-		return fmt.Errorf("transaction failed with status: %d", receipt.Status)
+		return common.Hash{}, fmt.Errorf("transaction failed with status: %d", receipt.Status)
 	}
 
-	return nil
+	return tx.Hash(), nil
 }
 
 func GetAddrAuth(key []byte, client *ethclient.Client) (common.Address, *bind.TransactOpts, error) {
