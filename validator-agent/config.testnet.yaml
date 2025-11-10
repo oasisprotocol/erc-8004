@@ -2,7 +2,7 @@ rofl:
   network: testnet  # Options: mainnet, testnet
 log:
   format: JSON
-  level: info       # Log level (debug, info, warn, error)
+  level: debug       # Log level (debug, info, warn, error)
   file: ""          # Log file path (empty for stdout)
 appd:
   signing_key_id: erc8004v1-signing-key
@@ -11,13 +11,15 @@ appd:
 validation_networks:
   ethereum-sepolia:
     rpc: wss://sepolia.infura.io/ws/v3/${INFURA_API_KEY}
-    identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    identity_registry: "0x8004a6090Cd10A7288092483047B097295Fb8847" # Proxy for IdentityRegistry
+#    identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
+    validation_registry: "0x8004CB39f29c09145F24Ad9dDe2A108C1A2cdfC5" # Proxy for ValidationRegistry
+#    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"
   base-sepolia:
     rpc: wss://base-sepolia.infura.io/ws/v3/${INFURA_API_KEY}
     identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"
   optimism-sepolia:
     rpc: wss://optimism-sepolia.infura.io/ws/v3/${INFURA_API_KEY}
     identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"

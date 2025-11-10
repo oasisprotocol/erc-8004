@@ -12,12 +12,12 @@ validation_networks:
   ethereum-sepolia:
     rpc: wss://sepolia.infura.io/ws/v3/${API_KEY}
     identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"
   base-sepolia:
     rpc: wss://base-sepolia.infura.io/ws/v3/${API_KEY}
     identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"
   optimism-sepolia:
     rpc: wss://optimism-sepolia.infura.io/ws/v3/${API_KEY}
     identity_registry: "0x7177a6867296406881E20d6647232314736Dd09A"
-    validation_registry: "0xB5048e3ef1DA4E04deB6f7d0423D06F63869e322"
+    validation_registry: "0x662b40A526cb4017d947e71eAF6753BF3eeE66d8"

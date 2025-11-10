@@ -8,6 +8,7 @@ require (
 	github.com/oasisprotocol/oasis-core/go v0.2506.0
 	github.com/oasisprotocol/oasis-sdk/client-sdk/go v0.16.0
 	github.com/spf13/cobra v1.8.1
+	github.com/status-im/keycard-go v0.2.0
 )
 
 require (
