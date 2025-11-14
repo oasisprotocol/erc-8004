@@ -1,0 +1,39 @@
+services:
+  rofl-8004:
+    image: ghcr.io/oasisprotocol/rofl-8004
+    platform: linux/amd64
+    environment:
+      # RPC for ERC-8004 registry. e.g. https://sepolia.infura.io/v3/<YOUR_KEY>
+      - RPC_URL=${RPC_URL}
+      # Pinata token for storing token URI when registering new agent.
+      - PINATA_JWT=${PINATA_JWT}
+      # (Optional) Additional TEE-derived public keys to be stored inside ROFL Metadata
+      #- PUBLIC_KEY_IDS=llm_key:secp256k1,ai_training_key:ed25519
+      # (Optional) ID of the TEE-derived key used to sign ERC-8004 transactions.
+      #- PRIVATE_KEY_ID=erc8004_signing_key
+      # (Optional) Agent name used for registration.
+      #- AGENT_NAME=rofl-agent
+      # (Optional) Agent description used for registration.
+      #- AGENT_DESCRIPTION="Oasis ROFL-powered trustless agent"
+      # (Optional) Agent image used for registration.
+      #- AGENT_IMAGE=https://example.com/logo.png
+      # (Optional) Agent version used for registration.
+      #- AGENT_VERSION=0.1.0
+      # (Optional) Agent category used for registration.
+      #- AGENT_CATEGORY=rofl
+      # (Optional) Pre-existing agent ID, if it is already registered.
+      #- AGENT_ID=${AGENT_ID}
+      # (Optional) Secret key of the account on ERC-8004 chain.
+      #- PRIVATE_KEY=${PRIVATE_KEY}
+      # (Optional) Validator address on ERC-8004 chain.
+      #- VALIDATOR_ADDRESS=0x7b60d730B6FBb55F9e4D1DB33B2D476e9c19fd35
+    volumes:
+      - /run/rofl-appd.sock:/run/rofl-appd.sock
+
+  my-app:
+    image: docker.io/hashicorp/http-echo:latest@sha256:fcb75f691c8b0414d670ae570240cbf95502cc18a9ba57e982ecac589760a186
+    platform: linux/amd64
+    environment:
+      ECHO_TEXT: "hello ROFL+ERC-8004 world"
+    ports:
+      - "5678:5678"

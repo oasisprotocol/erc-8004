@@ -10,10 +10,14 @@ The validation flow of ROFL-powered agents is the following:
 
 ![ERC-8004 validation flow of ROFL-powered agents](./docs/flow.svg)
 
-This repository contains two components:
+This repository contains:
 
 - the [Validator Agent](#validator-agent)
 - the [ROFL-8004 startup image](#rofl-8004-startup-image)
+- a simple [example] using the ROFL-8004 startup image to register ROFL as an 
+  ERC-8004 agent and request validation through `ValidationRegistry`
+
+[example]: ./example/compose.yaml
 
 ## Validator Agent
 
@@ -77,4 +81,34 @@ make test
 
 ## ROFL-8004 startup image
 
-TODO
+This is a container that simplifies the registration and validation of your 
+ROFL. 
+
+On the first startup it will register your ROFL as an ERC-8004 agent if it 
+doesn't exist yet and store the app ID along the agent's metadata.
+
+On every startup it will derive configured public key(s) and upsert them to 
+the ROFL replica metadata. Then, it will submit a `ValidationRequest` to the 
+validator agent to perform the validation of your app.
+
+A minimal setup to use the container is to include the following service in
+your ROFL `compose.yaml`:
+
+```yaml
+  rofl-8004:
+    image: ghcr.io/oasisprotocol/rofl-8004
+    platform: linux/amd64
+    environment:
+      # RPC for ERC-8004 registry. e.g. https://sepolia.infura.io/v3/<YOUR_KEY>
+      - RPC_URL=${RPC_URL}
+      # Pinata token for storing token URI when registering new agent.
+      - PINATA_JWT=${PINATA_JWT}
+    volumes:
+      - /run/rofl-appd.sock:/run/rofl-appd.sock
+```
+
+Oasis gas fees are covered by the ROFL node hosting your application. Ethereum
+transactions are signed with a generated keypair by default. Check out your 
+ROFL logs to find out which address to fund.
+
+For full functionality consult the [example].
