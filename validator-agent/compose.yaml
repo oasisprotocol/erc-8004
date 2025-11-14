@@ -1,7 +1,6 @@
 services:
   erc-8004-validator-agent:
-    build:
-      dockerfile: Dockerfile.validator-agent
+    build: .
     image: "ghcr.io/oasisprotocol/erc-8004-validator-agent"
     platform: linux/amd64
     volumes:
