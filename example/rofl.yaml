@@ -1,0 +1,50 @@
+name: rofl-8004-example
+version: 0.1.0
+repository: https://github.com/oasisprotocol/erc-8004
+author: Matevž Jekovec <matevz@oasisprotocol.org>
+license: Apache-2.0
+tee: tdx
+kind: container
+resources:
+  memory: 1024
+  cpus: 1
+  storage:
+    kind: disk-persistent
+    size: 2000
+artifacts:
+  firmware: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/ovmf.tdx.fd#db47100a7d6a0c1f6983be224137c3f8d7cb09b63bb1c7a5ee7829d8e994a42f
+  kernel: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/stage1.bin#e5d4d654ca1fa2c388bf64b23fc6e67815893fc7cb8b7cfee253d87963f54973
+  stage2: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/stage2-podman.tar.bz2#b2ea2a0ca769b6b2d64e3f0c577ee9c08f0bb81a6e33ed5b15b2a7e50ef9a09f
+  container:
+    runtime: https://github.com/oasisprotocol/oasis-sdk/releases/download/rofl-containers%2Fv0.8.4/rofl-containers#2cd0468ec2ea5f4264f47f728c5c3b0fcce93f5a537e568f8cbab8a53b526ae7
+    compose: compose.yaml
+deployments:
+  default:
+    app_id: rofl1qrvdymcuk4cm4tzg5duthmzlvqnr6c8k4uuwvztz
+    network: testnet
+    paratime: sapphire
+    admin: dave
+    oci_repository: rofl.sh/8fce045a-d004-4dd0-b1ab-c90797069f9a:1763044605
+    trust_root:
+      height: 29319703
+      hash: 5ffe84bcd79841d12fc3b6919f72aa927f9710933de217366c7703a6c203a386
+    policy:
+      quotes:
+        pcs:
+          tcb_validity_period: 30
+          min_tcb_evaluation_data_number: 18
+          tdx: {}
+      enclaves:
+        - id: WZlQhfnLJ52YYP+gE4D6dQ0xi15LKDfq9tgqQ7JlDeMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: 2CUuXkBePSdMdXB8vtVBf95PaXwkNlWuSnZOJMbUN8oAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      endorsements:
+        - any: {}
+      fees: endorsing_node
+      max_expiration: 3
+    secrets:
+      - name: PINATA_JWT
+        value: pGJwa1ggeU4P67pUsnH0cce/9/GeI80jjDLSCZKvCnCQcsy2EAZkbmFtZVga4DNJv9IC0DZapRuWopObZvtuK4gHOACavUdlbm9uY2VPbB9ISwVdQ/e3geI8IuTMZXZhbHVlWQLBp5nqO4dpF9QMnkXFY7ltJGJH/AS6sOkHLrA6CNLbqpDbZkJyzIv0TF5ILZ8Vv6nKC4W8EL94RADBKMQ3j8WKNK9ati1Ch4F5f+ZwCz0aB7DUPXKyOGMb+lLAv8GWIJHrN4aEnwnGRQ3eFtRrjQ5Fjyq71dyeCEswUYjwd4mk++Rimo6lnu1RS/NLzlZl0D7iFPIgUvNriFSiP7T9Qf5aKtdckuRg9RSzuLIYbf/Cw0auVo5gB1/wMNKAIGTJ372EeHDllZeUNcbdXjct7hWrUm45RT4DUh9ovN9z6I7Xa6OxINMSbs+xONG/iUTTzeASNdpcvkuX9IOCoLMEx8lTVarPvHsvHnXiVhQcAtE8VVOsw/QxZ3tru4oVxsaS14nq0RmGy9KjglSNkY/5iOLkxezmWRa8rSklPcs91Zx8u0WDqEKIYnwhL6ZWhnrTpppIJtKdxuIL/WU7PNpSZ9Mh7eqA8bu7kAqLh5cFBwXnXlUcLjjzFML9LvrTr/NHFgSzwEKcvPSAtnFv7/Z5z58c1bxNVwxOkF5QuLvi9R/6CUyGB5dmeworpQhpuNBCpolDRxwPBtfo/Z1K0dSK/x81muUGceTOhI7sUbl4KM13nRVk3irWwCicHdaw0whkhOKW46Ksjd6WkW/0jHeq9T3zbUUc4FB+TWv2f0hvqisH7pi7kKmhN0DvMsNOb/CRq9G0OkQ7ceKKLqERFuQryUr+oeOWD09mLz+5YovWFNEc4udwKmPRijafOK4kBQALjABAwiQXr80DhWz59u6efelgVymxwrhZPRSCbbyepeRbn2oSEArcwQxa0jSJTeMwAz9yHr9IbUKB7wDTbXcyF3Lk+yLdYHnUzXCl1qihP7Hpo7gYHrsQ0b0ULHwj4p1UJ0T4lnkGA5pMtFtEbpqrwNNsNRhwBx9FGIw3Wi1Cb9rpNlpL
+      - name: PUBLIC_KEY_IDS
+        value: pGJwa1ggj4gGLy164n5SCsy2xS0QnnX/eqcBC41kKw2JsBEK0jJkbmFtZVger8sPHvGClZJ3ybOpVki9R+mSPsjynv4wIIrO1LrBZW5vbmNlT4EqoQVdc6Wko5KzmXqDc2V2YWx1ZVgvKn8vgG2qIoqosFl3CRUh1QF/ckqCZosFmyOislh7fgEr+2l/nbXkQ9FonNBNfm0=
+      - name: RPC_URL
+        value: pGJwa1ggLdEqHU+jJvPY+1aoV909hMaFllJgvjmIE+TRJ+M6kz5kbmFtZVfvwYr61nYLfE641I0tyrxnVAXTOIVryWVub25jZU9T6bjOG9aj8dw37JCDVOVldmFsdWVYTTKKr6lGKQ23T09GftYXtIIPIqTGgJ2pJSwC4mJzWEMdX/YqrXmdloIT3jNcHAt49RmMidNHDc+TO7f+Hk5gQP9A5C2zNn1HhA+bsShH

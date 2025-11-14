@@ -43,7 +43,7 @@ deployments:
       max_expiration: 3
     secrets:
       - name: INFURA_API_KEY
-        value: pGJwa1ggpnh1luR8vMeJU6apAsi5DwUrbc1xmTLHZ1slSlSNmA5kbmFtZVekFdpWIGuiPZz50lhAtqRj3nb1H83zcmVub25jZU+MA663+ESbSvhMBV+YwqpldmFsdWVYMBLkxqB+n2V7RBmIbiaLSJ7XnIPpvEKUrKNVxWp+czvFFA4iV+jVWZ0zG6Gwkrpvvw==
+        value: pGJwa1ggqs/8ZiJmlqKyXw/wALsbh6afydns5x78spVXeeVInztkbmFtZVgeP28ayYjeCUcNQqKTbVFrS7Y/hZPmqbm2+0LqKPr4ZW5vbmNlT/9pm4kUN/50V7JRfi/comV2YWx1ZVgwoF+RNqA/rYNeS0UgQif1ifUQM/hR8xnDXEDkkFsfMZuALCJ6Nc2NI0BAAdBc7uOy
     machines:
       default:
         provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
