@@ -43,6 +43,7 @@ contract ValidationRegistry is IValidationRegistry {
         address validatorAddress;
         uint256 agentId;
         uint8 response;
+        bytes32 responseHash;
         bytes32 tag;
         uint256 lastUpdate;
     }
@@ -173,6 +174,7 @@ contract ValidationRegistry is IValidationRegistry {
             validatorAddress: request.validatorAddress,
             agentId: request.agentId,
             response: response,
+            responseHash: responseHash,
             tag: tag,
             lastUpdate: block.timestamp
         });
@@ -198,6 +200,7 @@ contract ValidationRegistry is IValidationRegistry {
      * @return validatorAddress The validator address (address(0) if no response yet)
      * @return agentId The agent ID (0 if no response yet)
      * @return response The validation response (0-100, or 0 if no response yet)
+     * @return responseHash KECCAK-256 hash of response data (optional for IPFS)
      * @return tag The response tag (bytes32(0) if no response yet)
      * @return lastUpdate Timestamp of last update (0 if no response yet)
      */
@@ -205,6 +208,7 @@ contract ValidationRegistry is IValidationRegistry {
         address validatorAddress,
         uint256 agentId,
         uint8 response,
+        bytes32 responseHash,
         bytes32 tag,
         uint256 lastUpdate
     ) {
@@ -219,6 +223,7 @@ contract ValidationRegistry is IValidationRegistry {
             resp.validatorAddress,
             resp.agentId,
             resp.response,
+            resp.responseHash,
             resp.tag,
             resp.lastUpdate
         );
