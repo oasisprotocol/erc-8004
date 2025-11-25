@@ -7,3 +7,4 @@ services:
       - /run/rofl-appd.sock:/run/rofl-appd.sock
     environment:
       - INFURA_API_KEY=${INFURA_API_KEY}
+      - PINATA_JWT=${PINATA_JWT}

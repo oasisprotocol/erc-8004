@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"regexp"
 	"strings"
@@ -20,6 +21,7 @@ type Config struct {
 	Rofl               *RoflConfig                         `koanf:"rofl"`
 	Log                *LogConfig                          `koanf:"log"`
 	ValidationNetworks map[string]*ValidationNetworkConfig `koanf:"validation_networks"`
+	Ipfs               *IpfsConfig                         `koanf:"ipfs"`
 	Appd               *AppdConfig                         `koanf:"appd"`
 }
 
@@ -86,6 +88,25 @@ func (cfg *ValidationNetworkConfig) Validate() error {
 	}
 	if !common.IsHexAddress(cfg.ValidationRegistry) {
 		return fmt.Errorf("validation_registry must be a valid Ethereum address")
+	}
+	return nil
+}
+
+// IpfsConfig is the IPFS configuration for uploading validation reports.
+type IpfsConfig struct {
+	// Gateway URL is an HTTP endpoint for uploading files to IPFS.
+	GatewayUrl string `koanf:"gateway_url"`
+
+	// Jwt is JSON web token for authentication.
+	Jwt string `koanf:"jwt"`
+}
+
+// Validate validates the logging configuration.
+func (cfg *IpfsConfig) Validate() error {
+	if cfg.GatewayUrl != "" {
+		if _, err := url.ParseRequestURI(cfg.GatewayUrl); err != nil {
+			return fmt.Errorf("gateway_url is not a valid URL: %w", err)
+		}
 	}
 	return nil
 }

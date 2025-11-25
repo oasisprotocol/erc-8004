@@ -1,10 +1,10 @@
 name: validator-agent
 version: 0.1.0
-description: "Listens to ValidationRequest events of the ERC-8004 validation registry and validates whether the agent is powered by ROFL TEE."
-homepage: https://github.com/oasisprotocol/erc-8004/blob/master/README.md#validator-agent
 repository: https://github.com/oasisprotocol/erc-8004
 author: Matevž Jekovec <matevz@oasisprotocol.org>
 license: Apache-2.0
+homepage: https://github.com/oasisprotocol/erc-8004/blob/master/README.md#validator-agent
+description: Listens to ValidationRequest events of the ERC-8004 validation registry and validates whether the agent is powered by ROFL TEE.
 tee: tdx
 kind: container
 resources:
@@ -37,8 +37,8 @@ deployments:
           min_tcb_evaluation_data_number: 18
           tdx: {}
       enclaves:
-        - id: XSptm3NBrqkv84w0q/rdOFsNgySTxyVQmpwlx1jdtF0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
-        - id: sJ6bBNRbAEX05jvUT82t06JmsLOAT0dH+O6k8oTu8ikAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: vUhEp5oSujZeiQ3errvE5Cknl8fZVrQsLiXkrvzjsSQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: QSyUqbqglJ9xjbukGricOOpcMgNFu6NrB+LvhX/+L7kAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
       endorsements:
         - any: {}
       fees: endorsing_node
@@ -46,6 +46,8 @@ deployments:
     secrets:
       - name: INFURA_API_KEY
         value: pGJwa1ggdL4uInvoGl41lDrBt54jg5W5vDZ/eg0e7XQMJZriOjdkbmFtZVge5RkM2odoh1P28iGJC/7Y/g4ns87UqbxUU32h9M2QZW5vbmNlT89UERk6v09HEfFxeepLb2V2YWx1ZVgwRnWinIOYvJS1BXBjtLreuZN6bgGe9/gJXWtaA1EG1Ojn1xCvm2iDhIiGSBwdGAy8
+      - name: PINATA_JWT
+        value: pGJwa1ggf4hUYpEXT4VKjOLrS7/I5i5A1gza4tYAkgp2bTAGv2xkbmFtZVgarQRg0PdCrWl7bXyEYswrFT3usFGnkVU+9Stlbm9uY2VPjLvmYxkQ2acC5JvTDuj0ZXZhbHVlWQLBNS2CPlT3XIRleQZuLBp1A4fwYw4/KdulUkmEcSiDuzM3H/AX5QeuQysTUxKvZL+4XzsX3vBbKsJ0Qlb1rM8aJrKc2M1BLwi/ySBPm/pnCy1llyz8So1OIHRALyHBjf5VSx8KinMcB3aZ90GAezpAR+9NxXCVi4tGERpEUlnpPJuSpfcqI9Msu++HXv5Yao3do48foobRmzaaICLD6uHNv29t5NwFW7qzaixIMPjixkQ39fh49BniHzpMDxPEe2NpdmizRyLqphvf+hLoK+bQJmpBWQJUydcOkjdHX2EVwoZwZcSa+oAyrN/gvF3Gce9I68WNiTk3ZZJDR54uqjiBXNhmVUHkx+QDSVJM2hXy1BDLoQDuJ/ClncY1NPfP8kRLV8e3QGDPjD4h4VkLWXOEqJpGPWu0pS/FKkWSiJRIqPjgwC/vFonB7+pY3cCHg/bSLXqQjN8qRbxGp5o7c/9fE7u/chmXOnOC7uhLO01IA2teh/skIj5jh6Pjf5wayXIlNK3+8CAewT2y5w/pzQM28CDlC1nX0ylRN49Wik7zqBFzhv8PG6S30z3PkT2qaWpqfWTSAiCw5e7JlOpWqpwB9W9eEr99VVs/SiGN29iuFYbVyx52gCyQ4mRysjNoboRJKEgpN4FjrNd9G2XUlTp2zEl1hFgMGlrE/m2X/YGPpTwutDxvG3p5IR71fyQDax+O039MPTaHO7vYdnaaX94XrdaSYxevyWyXB+ELFQc1xjh3/9ZHWxontt0QiUDwCXN15CKx0wjGyKCoOEc2j1dgd4xU8qcLRPk2XFXEtdaTQcrWLW/bEaolqeJrSXet69ZXGAQr2hy7+YgpjSk1RxB8L1iZNSGIF5vE0i/rxm6ONRiFSY5wfe5YPQUsC3wT+TDkUptZw2wg7j7m0p0aPiu2W9SJtyBs1F0q4Ebx4UfWQHwW
     machines:
       default:
         provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
