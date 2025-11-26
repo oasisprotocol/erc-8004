@@ -1,0 +1,54 @@
+name: rofl-8004-example
+version: 0.1.0
+repository: https://github.com/oasisprotocol/erc-8004
+author: Matevž Jekovec <matevz@oasisprotocol.org>
+license: Apache-2.0
+tee: tdx
+kind: container
+resources:
+  memory: 2048
+  cpus: 1
+  storage:
+    kind: disk-persistent
+    size: 5000
+artifacts:
+  firmware: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/ovmf.tdx.fd#db47100a7d6a0c1f6983be224137c3f8d7cb09b63bb1c7a5ee7829d8e994a42f
+  kernel: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/stage1.bin#e5d4d654ca1fa2c388bf64b23fc6e67815893fc7cb8b7cfee253d87963f54973
+  stage2: https://github.com/oasisprotocol/oasis-boot/releases/download/v0.6.2/stage2-podman.tar.bz2#b2ea2a0ca769b6b2d64e3f0c577ee9c08f0bb81a6e33ed5b15b2a7e50ef9a09f
+  container:
+    runtime: https://github.com/oasisprotocol/oasis-sdk/releases/download/rofl-containers%2Fv0.8.4/rofl-containers#2cd0468ec2ea5f4264f47f728c5c3b0fcce93f5a537e568f8cbab8a53b526ae7
+    compose: compose.yaml
+deployments:
+  default:
+    app_id: rofl1qrvdymcuk4cm4tzg5duthmzlvqnr6c8k4uuwvztz
+    network: testnet
+    paratime: sapphire
+    admin: dave
+    oci_repository: rofl.sh/8fce045a-d004-4dd0-b1ab-c90797069f9a:1763044605
+    trust_root:
+      height: 29319703
+      hash: 5ffe84bcd79841d12fc3b6919f72aa927f9710933de217366c7703a6c203a386
+    policy:
+      quotes:
+        pcs:
+          tcb_validity_period: 30
+          min_tcb_evaluation_data_number: 18
+          tdx: {}
+      enclaves:
+        - id: 9myRGQwT21YbdqpZ0Vkom5C6imhg31ij0Wtk0qzHWboAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+        - id: 29TZUhAMrwctsgOrPK2UOKYFA6eI/e4/wTNlyefZPWIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+      endorsements:
+        - any: {}
+      fees: endorsing_node
+      max_expiration: 3
+    secrets:
+      - name: PINATA_JWT
+        value: pGJwa1ggSV/S+aJHe5oMdDAz9d0W37KBzfe9QY+TCASXOzjFr19kbmFtZVganv+CO1hSBA9KKY7BSmOB3Ek4lIvnCptDyLplbm9uY2VP1Znb9qYhUBAPqiBxBqfcZXZhbHVlWQLBsncJFxavIzdhCqS0JrfnBb/r6W+qlhE77KBrjRDlx0jnM5Usr5aUhK38qC5CPcAIGbgYGoMlkW5eXetHSyunR5O6fLu7gs2OJZV2MEVl1w24+2ObTK8UUoItAbM6vBJ6PInuGvMNwHyR2ikfXmu0mm2hpsK0nz9P238YS4TQui3PoCwdlicIG2Nqd5f+cv6BOA1z8miJXCyrun3dkxtR7pJQcIzDlkkUSRpLTahkELNbUEHVlH2flcSl1H2r8hiAf0bvfLlILYq9aX+m+9UwqBdyqTiy7y01QVuk/4Ayxfy+G52869PROp21KEb3nk98wT87qI3AK4ixE3Am4v3RakuoCuSrkkiMWc9nE+7MbhHjOn7RaUuWtk4d0n8BYl7zJ+dQFd/JghvNg+FKWRRpGP5GSqOMhB3WmPxMOTeuB0lt5XlwiUK4t6Cio94AeALJRfUHcud8mNpKioK6N6fn9EKfzOiSb0s/6C2ht9NEvk0FaqM8n4dclXYfhP29g0FvxluDtwDcOUN+60RJSkluUrnOeEBTmnJxsFZsdQWl6aaKYIax5jRsXPqeJJKVRadgedl9e5JNmH5nBJPSOpENSPvK5aidTUU2lyDfrWT3lACs1tDoS4yV4vbsjyl2Ul9inZsyXK5lSc5iPflrazM8sAVqoi91orK1HyLpVXsJyEPgKHyPy27iY/a7icKzihMBOXVRsMk8/8QJQKho1n46Qngfe7PI/NcpleYob/BSxys7Wj7gf3yogdVH50ac6HjvKyavZ3k6mSp8uSJGGJQHsmNbmGJl6eNCxJ4wQdVY+Fu6D8iMCobMKqU4RFHPKF0g/vES6481TXxxvfXN9g3J8kzK3EnVQMwIy3Zmxp3wUjayMBPNC/9BsB3ykKsaTh+t0pF7IE0+G5NuVDe3dDsUmhwfZhjtdrgnA+ZG51Q2tSnF
+      - name: PUBLIC_KEY_IDS
+        value: pGJwa1ggj4gGLy164n5SCsy2xS0QnnX/eqcBC41kKw2JsBEK0jJkbmFtZVger8sPHvGClZJ3ybOpVki9R+mSPsjynv4wIIrO1LrBZW5vbmNlT4EqoQVdc6Wko5KzmXqDc2V2YWx1ZVgvKn8vgG2qIoqosFl3CRUh1QF/ckqCZosFmyOislh7fgEr+2l/nbXkQ9FonNBNfm0=
+      - name: RPC_URL
+        value: pGJwa1ggVQAWtEdKBytMKG1e+TomhHhWsnR9Alzvd1qEvdwezg5kbmFtZVfjLL4CAP0nWXeleKUsKrDcnEJCaXKg6WVub25jZU8PkMd5XIwkeyO06/z1Bm9ldmFsdWVYTTJ98gCzo6SlWKUb+BTg4HaszWRrB1Ah+HuhTF6Uz1HSfJiAQdZaWHKszc673iL0/E0IArNYYhyo0Qv38FQSB8ZM6fBMj3qKan4sXaOy
+    machines:
+      default:
+        provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
+        offer: playground_short

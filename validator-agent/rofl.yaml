@@ -1,5 +1,7 @@
 name: validator-agent
 version: 0.1.0
+description: "Listens to ValidationRequest events of the ERC-8004 validation registry and validates whether the agent is powered by ROFL TEE."
+homepage: https://github.com/oasisprotocol/erc-8004/blob/master/README.md#validator-agent
 repository: https://github.com/oasisprotocol/erc-8004
 author: Matevž Jekovec <matevz@oasisprotocol.org>
 license: Apache-2.0
@@ -43,7 +45,7 @@ deployments:
       max_expiration: 3
     secrets:
       - name: INFURA_API_KEY
-        value: pGJwa1ggpnh1luR8vMeJU6apAsi5DwUrbc1xmTLHZ1slSlSNmA5kbmFtZVekFdpWIGuiPZz50lhAtqRj3nb1H83zcmVub25jZU+MA663+ESbSvhMBV+YwqpldmFsdWVYMBLkxqB+n2V7RBmIbiaLSJ7XnIPpvEKUrKNVxWp+czvFFA4iV+jVWZ0zG6Gwkrpvvw==
+        value: pGJwa1ggdL4uInvoGl41lDrBt54jg5W5vDZ/eg0e7XQMJZriOjdkbmFtZVge5RkM2odoh1P28iGJC/7Y/g4ns87UqbxUU32h9M2QZW5vbmNlT89UERk6v09HEfFxeepLb2V2YWx1ZVgwRnWinIOYvJS1BXBjtLreuZN6bgGe9/gJXWtaA1EG1Ojn1xCvm2iDhIiGSBwdGAy8
     machines:
       default:
         provider: oasis1qp2ens0hsp7gh23wajxa4hpetkdek3swyyulyrmz
