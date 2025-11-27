@@ -137,6 +137,11 @@
         "internalType": "uint8"
       },
       {
+        "name": "responseHash",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      },
+      {
         "name": "tag",
         "type": "bytes32",
         "internalType": "bytes32"

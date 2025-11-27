@@ -100,7 +100,7 @@ func runRoot() error {
 
 	monitors := make(map[string]*validator.ValidationMonitor)
 	for name, n := range cfg.ValidationNetworks {
-		m := validator.NewValidationMonitor(name, n, sk, roflClient)
+		m := validator.NewValidationMonitor(name, n, cfg.Ipfs, sk, roflClient)
 		monitors[name] = m
 	}
 

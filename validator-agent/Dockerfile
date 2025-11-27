@@ -1,7 +1,7 @@
 # Build the validator-agent binary
 FROM docker.io/golang:1.25 AS builder
 WORKDIR /build
-COPY validator-agent validator-agent
+COPY . validator-agent
 RUN cd validator-agent && go build -o validator-agent .
 
 FROM debian:latest
@@ -14,7 +14,7 @@ RUN apt update && apt install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /build/validator-agent/validator-agent /app
 
 # Copy the config file
-COPY validator-agent/config.testnet.yaml /app/config.yaml
+COPY config.testnet.yaml /app/config.yaml
 #COPY validator-agent/config.mainnet.yaml /app/config.yaml
 
 # Set the entrypoint

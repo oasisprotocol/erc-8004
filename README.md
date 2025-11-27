@@ -35,6 +35,7 @@ make
 APPD__MOCK=true \
 APPD__MOCK_SIGNING_KEY=your_private_key_on_validation_networks \
 INFURA_API_KEY=your_infura_api_key \
+PINATA_JWT=your_pinata_jwt \
 ./validator-agent  --config config.testnet.yaml
 ```
 
@@ -55,6 +56,7 @@ oasis rofl init --reset
 oasis rofl create
 oasis rofl build
 echo -n "Your Infura API KEY here" | oasis rofl secret set INFURA_API_KEY -
+echo -n "Your Pinata JWT here" | oasis rofl secret set PINATA_JWT -
 oasis rofl update
 oasis rofl deploy
 ```

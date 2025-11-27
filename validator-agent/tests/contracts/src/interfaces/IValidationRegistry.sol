@@ -82,6 +82,7 @@ interface IValidationRegistry {
      * @return validatorAddress The validator address
      * @return agentId The agent ID
      * @return response The validation response (0-100)
+     * @return responseHash KECCAK-256 hash of response data (optional for IPFS)
      * @return tag The response tag
      * @return lastUpdate Timestamp of last update
      */
@@ -89,6 +90,7 @@ interface IValidationRegistry {
         address validatorAddress,
         uint256 agentId,
         uint8 response,
+        bytes32 responseHash,
         bytes32 tag,
         uint256 lastUpdate
     );
