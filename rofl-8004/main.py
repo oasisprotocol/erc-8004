@@ -1,3 +1,4 @@
+import json
 import os
 import time
 import sys
@@ -7,6 +8,8 @@ from eth_account import Account
 import logging
 from rofl_metadata import RoflMetadata, ERC8004_SIGNING_KEY_ID, ERC8004_AGENT_ID_KEY
 from oasis_rofl_client import KeyKind
+
+ROFL_8004_CONFIG_FILENAME = ".rofl-8004/rofl-8004.json"
 
 def main():
     logging.basicConfig(
@@ -44,10 +47,18 @@ def main():
         logging.info(f"Account {address} has no balance. Please top it up in order to register a new ERC-8004 agent and submit the validation request.")
         time.sleep(5)
 
-    # Send ValidationRequest to ERC-8004 registry.
+    # Check for ROFL config on persistent storage.
+    rofl_config = {}
+    if os.path.exists(ROFL_8004_CONFIG_FILENAME):
+        with open(ROFL_8004_CONFIG_FILENAME, "r") as f:
+            rofl_config = json.load(f)
+            logging.info(f"Loaded ROFL config file from {ROFL_8004_CONFIG_FILENAME}")
+
     agent_id = os.getenv("AGENT_ID") or None
     if agent_id is None:
-        agent_id = replica_metadata.get(ERC8004_AGENT_ID_KEY, None)
+        agent_id = rofl_config.get("agent_id")
+    if agent_id is None:
+        agent_id = replica_metadata.get(ERC8004_AGENT_ID_KEY)
     if agent_id is None:
         app_metadata = metadata_handler.get_app_metadata()
         name = os.getenv("AGENT_NAME") or app_metadata["name"] or "rofl-agent"
@@ -61,6 +72,13 @@ def main():
         app_id = metadata_handler.client.get_app_id()
         agent_id = erc8004.register_agent(app_id, name, description, image, version, category, mcp, a2a, ens)
 
+    # Store agent ID to disk.
+    rofl_config["agent_id"] = agent_id
+    os.makedirs(os.path.dirname(ROFL_8004_CONFIG_FILENAME), exist_ok=True)
+    with open(ROFL_8004_CONFIG_FILENAME, "w") as f:
+        json.dump(rofl_config, f)
+        logging.info(f"Stored ROFL config file to {ROFL_8004_CONFIG_FILENAME}")
+
     # Store agent ID to ROFL metadata.
     replica_metadata[ERC8004_AGENT_ID_KEY] = agent_id
 
@@ -73,6 +91,7 @@ def main():
     # Store any new keys or agent ID.
     metadata_handler.store_public_keys(key_ids.split(",") if key_ids else [], replica_metadata)
 
+    # Send ValidationRequest to ERC-8004 registry.
     erc8004.validation_request(agent_id, os.getenv("VALIDATOR_ADDRESS", "0x7b60d730B6FBb55F9e4D1DB33B2D476e9c19fd35"))
 
 if __name__ == "__main__":
