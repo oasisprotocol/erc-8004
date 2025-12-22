@@ -22,7 +22,7 @@ def main():
         sys.exit("PINATA_JWT is required")
 
     metadata_handler = RoflMetadata()
-    metadata = metadata_handler.client.get_metadata()
+    replica_metadata = metadata_handler.client.get_metadata()
 
     private_key_id = os.getenv("ERC8004_SIGNING_KEY_ID", ERC8004_SIGNING_KEY_ID)
     private_key = os.getenv("ERC8004_SIGNING_KEY") or None
@@ -47,12 +47,13 @@ def main():
     # Send ValidationRequest to ERC-8004 registry.
     agent_id = os.getenv("AGENT_ID") or None
     if agent_id is None:
-        agent_id = metadata.get(ERC8004_AGENT_ID_KEY, None)
+        agent_id = replica_metadata.get(ERC8004_AGENT_ID_KEY, None)
     if agent_id is None:
-        name = os.getenv("AGENT_NAME") or "rofl-agent"
-        description = os.getenv("AGENT_DESCRIPTION") or "Oasis ROFL-powered trustless agent."
+        app_metadata = metadata_handler.get_app_metadata()
+        name = os.getenv("AGENT_NAME") or app_metadata["name"] or "rofl-agent"
+        description = os.getenv("AGENT_DESCRIPTION") or app_metadata["description"] or "Oasis ROFL-powered trustless agent."
         image = os.getenv("AGENT_IMAGE") or None
-        version = os.getenv("AGENT_VERSION") or "0.1.0"
+        version = os.getenv("AGENT_VERSION") or app_metadata["version"] or "0.1.0"
         category = os.getenv("AGENT_CATEGORY") or "rofl"
         mcp = os.getenv("AGENT_MCP") or None
         a2a = os.getenv("AGENT_A2A") or None
@@ -61,16 +62,16 @@ def main():
         agent_id = erc8004.register_agent(app_id, name, description, image, version, category, mcp, a2a, ens)
 
     # Store agent ID to ROFL metadata.
-    metadata[ERC8004_AGENT_ID_KEY] = agent_id
+    replica_metadata[ERC8004_AGENT_ID_KEY] = agent_id
 
     # Store the public key of the ERC-8004 signing key (either provided or TEE-derived) to ROFL metadata.
-    metadata[f"{private_key_id}.pk"] = RoflMetadata.derive_pubkey(bytes.fromhex(private_key), KeyKind.SECP256K1).hex()
+    replica_metadata[f"{private_key_id}.pk"] = RoflMetadata.derive_pubkey(bytes.fromhex(private_key), KeyKind.SECP256K1).hex()
 
     # Update ROFL replica metadata with exposed public keys.
     key_ids = os.getenv("PUBLIC_KEY_IDS")
 
     # Store any new keys or agent ID.
-    metadata_handler.store_public_keys(key_ids.split(",") if key_ids else [], metadata)
+    metadata_handler.store_public_keys(key_ids.split(",") if key_ids else [], replica_metadata)
 
     erc8004.validation_request(agent_id, os.getenv("VALIDATOR_ADDRESS", "0x7b60d730B6FBb55F9e4D1DB33B2D476e9c19fd35"))
 
