@@ -107,6 +107,10 @@ your ROFL `compose.yaml`:
       - PINATA_JWT=${PINATA_JWT}
     volumes:
       - /run/rofl-appd.sock:/run/rofl-appd.sock
+      - rofl-8004-volume:/root/.rofl-8004
+
+volumes:
+  rofl-8004-volume:
 ```
 
 Oasis gas fees are covered by the ROFL node hosting your application. Ethereum

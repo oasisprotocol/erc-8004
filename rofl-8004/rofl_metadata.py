@@ -1,3 +1,5 @@
+import bech32
+import cbor2
 import logging
 from ecdsa import SigningKey, SECP256k1, Ed25519
 from oasis_rofl_client import RoflClient, KeyKind
@@ -34,6 +36,26 @@ class RoflMetadata:
             self.client.set_metadata(metadata)
 
         return metadata
+
+    def get_app_metadata(self) -> dict[str, str]:
+        """Returns app metadata stored on-chain"""
+
+        app_id = self.client.get_app_id()
+        _, bech32_data = bech32.bech32_decode(app_id)
+        app_id_bytes = bytes(bech32.convertbits(bech32_data, 5, 8, False))
+
+        response = self.client.query("rofl.App", cbor2.dumps({"id": app_id_bytes}))
+        app_metadata = cbor2.loads(response)["metadata"]
+
+        return {
+            "name": app_metadata.get("net.oasis.rofl.name"),
+            "version": app_metadata.get("net.oasis.rofl.version"),
+            "repository": app_metadata.get("net.oasis.rofl.repository"),
+            "author": app_metadata.get("net.oasis.rofl.author"),
+            "license": app_metadata.get("net.oasis.rofl.license"),
+            "homepage": app_metadata.get("net.oasis.rofl.homepage"),
+            "description": app_metadata.get("net.oasis.rofl.description"),
+        }
 
     def derive_pubkey(key: bytes, kind: KeyKind) -> bytes:
         match kind:

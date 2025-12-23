@@ -1,9 +1,9 @@
 FROM docker.io/python:3-slim
-WORKDIR /rofl-8004
 
 COPY . /rofl-8004
 
 RUN apt update && apt install -y git python3-dev gcc libc-dev && apt clean && rm -rf /var/lib/apt/lists/*
-RUN pip install -r requirements.txt
+RUN cd /rofl-8004 && pip install -r requirements.txt
 
-CMD ["python", "main.py"]
+WORKDIR /root
+CMD ["python", "/rofl-8004/main.py"]

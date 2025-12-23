@@ -36,6 +36,7 @@ services:
       #- VALIDATOR_ADDRESS=0x7cd2eccd146b6626c8a500ab5644b1a506115e6f
     volumes:
       - /run/rofl-appd.sock:/run/rofl-appd.sock
+      - rofl-8004-volume:/root/.rofl-8004
 
   my-app:
     image: docker.io/hashicorp/http-echo:latest@sha256:fcb75f691c8b0414d670ae570240cbf95502cc18a9ba57e982ecac589760a186
@@ -44,3 +45,6 @@ services:
       ECHO_TEXT: "hello ROFL+ERC-8004 world"
     ports:
       - "5678:5678"
+
+volumes:
+  rofl-8004-volume:
